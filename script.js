@@ -123,13 +123,19 @@ function showSuggestions(query) {
     const suggestions = new Set();
     const queryLower = query.toLowerCase();
     
+    // Helper function to check exact word match for suggestions
+    const startsWithQuery = (text, query) => {
+        const regex = new RegExp(`\\b${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+        return regex.test(text);
+    };
+    
     allPages.forEach(page => {
         if (!page) return;
         
         // Extract keywords from meta tags
         const keywords = page.metaKeywords.split(',').map(k => k.trim());
         keywords.forEach(keyword => {
-            if (keyword.toLowerCase().includes(queryLower) && keyword.length > 3) {
+            if (startsWithQuery(keyword, queryLower) && keyword.length > 3) {
                 suggestions.add(keyword);
             }
         });
@@ -137,7 +143,7 @@ function showSuggestions(query) {
         // Extract words from title
         const titleWords = page.title.split(' ').filter(w => w.length > 3);
         titleWords.forEach(word => {
-            if (word.toLowerCase().includes(queryLower)) {
+            if (startsWithQuery(word, queryLower)) {
                 suggestions.add(word);
             }
         });
@@ -173,6 +179,12 @@ async function performSearch() {
     const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 0);
     const results = [];
     
+    // Helper function to check exact word match
+    const hasExactWord = (text, word) => {
+        const regex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+        return regex.test(text);
+    };
+    
     allPages.forEach(page => {
         if (!page) return;
         
@@ -183,7 +195,7 @@ async function performSearch() {
         // Priority 1: Title match (highest score)
         const titleLower = page.title.toLowerCase();
         queryWords.forEach(word => {
-            if (titleLower.includes(word)) {
+            if (hasExactWord(page.title, word)) {
                 matchScore += 100;
                 matchType = matchType || 'title';
                 matchDetails.push(`Title contains "${word}"`);
@@ -193,16 +205,16 @@ async function performSearch() {
         // Priority 2: H1 match
         const h1Lower = page.h1.toLowerCase();
         queryWords.forEach(word => {
-            if (h1Lower.includes(word)) {
+            if (hasExactWord(page.h1, word)) {
                 matchScore += 80;
                 matchType = matchType || 'title';
             }
         });
         
         // Priority 3: Meta tags and keywords
-        const metaLower = (page.metaDescription + ' ' + page.metaKeywords).toLowerCase();
+        const metaText = page.metaDescription + ' ' + page.metaKeywords;
         queryWords.forEach(word => {
-            if (metaLower.includes(word)) {
+            if (hasExactWord(metaText, word)) {
                 matchScore += 50;
                 matchType = matchType || 'meta';
                 matchDetails.push(`Meta contains "${word}"`);
@@ -211,9 +223,8 @@ async function performSearch() {
         
         // Priority 4: Image alt attributes
         page.images.forEach(img => {
-            const altLower = img.alt.toLowerCase();
             queryWords.forEach(word => {
-                if (altLower.includes(word)) {
+                if (hasExactWord(img.alt, word)) {
                     matchScore += 40;
                     matchType = matchType || 'meta';
                 }
@@ -223,7 +234,7 @@ async function performSearch() {
         // Priority 5: H2 match
         const h2Lower = page.h2.toLowerCase();
         queryWords.forEach(word => {
-            if (h2Lower.includes(word)) {
+            if (hasExactWord(page.h2, word)) {
                 matchScore += 30;
                 matchType = matchType || 'content';
             }
@@ -232,7 +243,7 @@ async function performSearch() {
         // Priority 6: Body text content
         const bodyLower = page.paragraphs.toLowerCase();
         queryWords.forEach(word => {
-            if (bodyLower.includes(word)) {
+            if (hasExactWord(page.paragraphs, word)) {
                 matchScore += 20;
                 matchType = matchType || 'content';
                 matchDetails.push(`Content contains "${word}"`);
