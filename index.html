@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fouad Image Search - Discover Amazing Images</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="search-container">
+        <div class="header">
+            <h1 class="logo">
+                <span class="logo-f">F</span>ouad
+                <span class="logo-search">Search</span>
+            </h1>
+            <p class="tagline">Discover the world through images</p>
+        </div>
+
+        <div class="search-box">
+            <div class="search-input-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search for space, wildlife, food, travel..."
+                    autocomplete="off"
+                >
+                <button id="clearBtn" class="clear-btn" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <button id="searchBtn" class="search-button">
+                <span>Search</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="search-suggestions" id="suggestions"></div>
+
+        <div class="filter-section" id="filterSection" style="display: none;">
+            <button class="filter-btn active" data-filter="all">All Results</button>
+            <button class="filter-btn" data-filter="title">Title Matches</button>
+            <button class="filter-btn" data-filter="meta">Meta Tags</button>
+            <button class="filter-btn" data-filter="content">Content</button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Searching through pages...</p>
+        </div>
+
+        <div class="results-grid" id="results"></div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <h3>No results found</h3>
+            <p>Try different keywords or browse our suggestions</p>
+        </div>
+    </div>
+
+    <div class="popular-topics">
+        <h3>Popular Topics</h3>
+        <div class="topic-chips">
+            <button class="topic-chip" data-query="space">🚀 Space</button>
+            <button class="topic-chip" data-query="wildlife">🦁 Wildlife</button>
+            <button class="topic-chip" data-query="food">🍕 Food</button>
+            <button class="topic-chip" data-query="travel">✈️ Travel</button>
+            <button class="topic-chip" data-query="art">🎨 Art</button>
+            <button class="topic-chip" data-query="sports">⚽ Sports</button>
+            <button class="topic-chip" data-query="technology">💻 Technology</button>
+            <button class="topic-chip" data-query="nature">🌿 Nature</button>
+            <button class="topic-chip" data-query="music">🎵 Music</button>
+            <button class="topic-chip" data-query="architecture">🏛️ Architecture</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Fouad Search. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
