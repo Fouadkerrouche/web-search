@@ -1,5 +1,5 @@
 // Configuration
-const TOTAL_PAGES = 55;
+const TOTAL_PAGES = 75;
 const PAGES_PATH = 'pages/';
 
 // State
@@ -300,7 +300,7 @@ function displayResults(results) {
         
         return `
             <div class="result-card" style="animation-delay: ${index * 0.1}s" onclick="openPage('${result.url}')">
-                <img src="${mainImage.src}" alt="${mainImage.alt}" class="result-image" loading="lazy">
+                <img src="${mainImage.src}" alt="${mainImage.alt}" class="result-image" loading="lazy" onload="this.classList.add('loaded')">
                 <div class="result-content">
                     <div class="result-title">
                         ${result.h1 || result.title}
