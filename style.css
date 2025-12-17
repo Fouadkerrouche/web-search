@@ -211,6 +211,51 @@ body::before {
     display: block;
 }
 
+.search-tips {
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-lg), var(--glow-purple);
+    backdrop-filter: blur(20px);
+    animation: fadeIn 0.3s ease;
+}
+
+.search-tips h4 {
+    color: #c084fc;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.search-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-tips li {
+    color: #e5e7eb;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.search-tips strong {
+    color: #a855f7;
+    font-weight: 600;
+}
+
+.search-tips code {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: #c084fc;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
 .suggestion-item {
     padding: 12px 15px;
     cursor: pointer;

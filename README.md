@@ -5,8 +5,13 @@ A mysterious dark-themed web search application with advanced search capabilitie
 ## 🚀 Features
 
 - **Advanced Search Engine**: Real-time search across 75+ pages of content
+- **Boolean Operators**: Support for AND/OR operators for precise searches
+  - `quantum AND physics` - Find pages containing both terms
+  - `space OR astronomy` - Find pages containing either term
+  - Default behavior searches for any matching word
 - **Smart Filtering**: Filter results by title matches, meta tags, and content
 - **Search Suggestions**: Auto-complete suggestions based on keywords and titles
+- **Interactive Search Tips**: Helpful tips shown when focusing on search box
 - **Dark Mysterious Theme**: Modern dark UI with purple/pink gradients and glowing effects
 - **Image Loading States**: Shimmer loading animations for better UX
 - **Responsive Design**: Mobile-friendly and adaptive layout
@@ -33,6 +38,7 @@ A mysterious dark-themed web search application with advanced search capabilitie
 ### Features Implementation
 - **Search Algorithm**: 
   - Multi-field text matching (title, H1, H2, meta tags, content)
+  - Boolean operators (AND/OR) for precise search control
   - Scoring system with prioritization
   - Exact word matching with regex patterns
   - Real-time filtering and sorting
@@ -92,11 +98,16 @@ web-search/
 
 ## 📖 How to Use
 
-1. **Search**: Type keywords in the search box and press Enter or click Search button
-2. **Filter Results**: Use filter buttons to narrow results by match type (All/Title/Meta/Content)
-3. **View Details**: Click on any result card to open the full page in a new tab
-4. **Quick Topics**: Click on popular topic chips for instant searches
-5. **Clear Search**: Use the X button in the search box to reset
+1. **Basic Search**: Type keywords in the search box and press Enter or click Search button
+2. **AND Operator**: Use `term1 AND term2` to find pages containing both terms
+   - Example: `quantum AND physics` - Returns only pages with both words
+3. **OR Operator**: Use `term1 OR term2` to find pages containing either term
+   - Example: `space OR astronomy` - Returns pages with either word
+4. **Filter Results**: Use filter buttons to narrow results by match type (All/Title/Meta/Content)
+5. **View Details**: Click on any result card to open the full page in a new tab
+6. **Quick Topics**: Click on popular topic chips for instant searches
+7. **Clear Search**: Use the X button in the search box to reset
+8. **Search Tips**: Focus on the search box to see helpful operator examples
 
 ## 🎨 Customization
 
@@ -168,6 +179,11 @@ For licensing inquiries, contact: [Your Contact Information]
 
 ## 📝 Version History
 
+- **v1.1.0** (December 2025)
+  - Added AND/OR boolean operators for advanced search
+  - Interactive search tips panel
+  - Improved search algorithm with operator support
+  - Updated UI with helpful examples
 - **v1.0.0** (December 2025)
   - Initial release
   - 75 searchable pages

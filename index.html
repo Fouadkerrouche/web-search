@@ -26,7 +26,7 @@
                     type="text" 
                     id="searchInput" 
                     class="search-input" 
-                    placeholder="Search for space, wildlife, food, travel..."
+                    placeholder="Search for space, wildlife... (Use AND/OR: 'quantum AND physics')"
                     autocomplete="off"
                 >
                 <button id="clearBtn" class="clear-btn" style="display: none;">
@@ -45,6 +45,15 @@
         </div>
 
         <div class="search-suggestions" id="suggestions"></div>
+
+        <div class="search-tips" id="searchTips" style="display: none;">
+            <h4>🔍 Search Tips</h4>
+            <ul>
+                <li><strong>AND:</strong> Find pages with all terms - <code>quantum AND physics</code></li>
+                <li><strong>OR:</strong> Find pages with any term - <code>space OR astronomy</code></li>
+                <li><strong>Default:</strong> Without operators, searches for any matching word</li>
+            </ul>
+        </div>
 
         <div class="filter-section" id="filterSection" style="display: none;">
             <button class="filter-btn active" data-filter="all">All Results</button>

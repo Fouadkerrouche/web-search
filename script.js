@@ -17,6 +17,7 @@ const noResultsEl = document.getElementById('noResults');
 const statsEl = document.getElementById('stats');
 const filterSection = document.getElementById('filterSection');
 const suggestionsEl = document.getElementById('suggestions');
+const searchTipsEl = document.getElementById('searchTips');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,9 +36,22 @@ function setupEventListeners() {
         clearBtn.style.display = e.target.value ? 'block' : 'none';
         if (e.target.value.length > 2) {
             showSuggestions(e.target.value);
+            searchTipsEl.style.display = 'none';
         } else {
             suggestionsEl.classList.remove('show');
         }
+    });
+    
+    searchInput.addEventListener('focus', () => {
+        if (!searchInput.value) {
+            searchTipsEl.style.display = 'block';
+        }
+    });
+    
+    searchInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            searchTipsEl.style.display = 'none';
+        }, 200);
     });
     
     clearBtn.addEventListener('click', () => {
@@ -168,7 +182,34 @@ function selectSuggestion(suggestion) {
     performSearch();
 }
 
-// Perform search with priority
+// Parse search query for AND/OR operators
+function parseSearchQuery(query) {
+    const queryLower = query.toLowerCase();
+    
+    // Check for AND operator
+    if (queryLower.includes(' and ')) {
+        const terms = query.split(/\s+and\s+/i)
+            .map(term => term.trim())
+            .filter(term => term.length > 0);
+        return { searchMode: 'AND', queryTerms: terms };
+    }
+    
+    // Check for OR operator
+    if (queryLower.includes(' or ')) {
+        const terms = query.split(/\s+or\s+/i)
+            .map(term => term.trim())
+            .filter(term => term.length > 0);
+        return { searchMode: 'OR', queryTerms: terms };
+    }
+    
+    // Default: treat as OR (any word matches)
+    const terms = query.split(' ')
+        .map(term => term.trim())
+        .filter(term => term.length > 0);
+    return { searchMode: 'OR', queryTerms: terms };
+}
+
+// Perform search with priority and AND/OR operators
 async function performSearch() {
     const query = searchInput.value.trim();
     if (!query) return;
@@ -176,7 +217,8 @@ async function performSearch() {
     suggestionsEl.classList.remove('show');
     showLoading();
     
-    const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 0);
+    // Parse query for AND/OR operators
+    const { searchMode, queryTerms } = parseSearchQuery(query);
     const results = [];
     
     // Helper function to check exact word match
@@ -185,16 +227,38 @@ async function performSearch() {
         return regex.test(text);
     };
     
+    // Check if page matches search criteria
+    const checkPageMatch = (page, terms, mode) => {
+        const matchedTerms = new Set();
+        
+        terms.forEach(term => {
+            const searchText = `${page.title} ${page.h1} ${page.h2} ${page.metaDescription} ${page.metaKeywords} ${page.paragraphs}`;
+            if (hasExactWord(searchText, term)) {
+                matchedTerms.add(term);
+            }
+        });
+        
+        if (mode === 'AND') {
+            return matchedTerms.size === terms.length;
+        } else { // OR mode
+            return matchedTerms.size > 0;
+        }
+    };
+    
     allPages.forEach(page => {
         if (!page) return;
+        
+        // Check if page matches the search mode (AND/OR)
+        if (!checkPageMatch(page, queryTerms, searchMode)) {
+            return;
+        }
         
         let matchScore = 0;
         let matchType = '';
         let matchDetails = [];
         
         // Priority 1: Title match (highest score)
-        const titleLower = page.title.toLowerCase();
-        queryWords.forEach(word => {
+        queryTerms.forEach(word => {
             if (hasExactWord(page.title, word)) {
                 matchScore += 100;
                 matchType = matchType || 'title';
@@ -203,8 +267,7 @@ async function performSearch() {
         });
         
         // Priority 2: H1 match
-        const h1Lower = page.h1.toLowerCase();
-        queryWords.forEach(word => {
+        queryTerms.forEach(word => {
             if (hasExactWord(page.h1, word)) {
                 matchScore += 80;
                 matchType = matchType || 'title';
@@ -213,7 +276,7 @@ async function performSearch() {
         
         // Priority 3: Meta tags and keywords
         const metaText = page.metaDescription + ' ' + page.metaKeywords;
-        queryWords.forEach(word => {
+        queryTerms.forEach(word => {
             if (hasExactWord(metaText, word)) {
                 matchScore += 50;
                 matchType = matchType || 'meta';
@@ -223,7 +286,7 @@ async function performSearch() {
         
         // Priority 4: Image alt attributes
         page.images.forEach(img => {
-            queryWords.forEach(word => {
+            queryTerms.forEach(word => {
                 if (hasExactWord(img.alt, word)) {
                     matchScore += 40;
                     matchType = matchType || 'meta';
@@ -232,8 +295,7 @@ async function performSearch() {
         });
         
         // Priority 5: H2 match
-        const h2Lower = page.h2.toLowerCase();
-        queryWords.forEach(word => {
+        queryTerms.forEach(word => {
             if (hasExactWord(page.h2, word)) {
                 matchScore += 30;
                 matchType = matchType || 'content';
@@ -241,8 +303,7 @@ async function performSearch() {
         });
         
         // Priority 6: Body text content
-        const bodyLower = page.paragraphs.toLowerCase();
-        queryWords.forEach(word => {
+        queryTerms.forEach(word => {
             if (hasExactWord(page.paragraphs, word)) {
                 matchScore += 20;
                 matchType = matchType || 'content';
