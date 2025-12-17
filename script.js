@@ -6,6 +6,7 @@ const PAGES_PATH = 'pages/';
 let allPages = [];
 let currentFilter = 'all';
 let searchResults = [];
+let wordDictionary = new Set();
 
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
@@ -18,6 +19,7 @@ const statsEl = document.getElementById('stats');
 const filterSection = document.getElementById('filterSection');
 const suggestionsEl = document.getElementById('suggestions');
 const searchTipsEl = document.getElementById('searchTips');
+const didYouMeanEl = document.getElementById('didYouMean');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,7 +36,7 @@ function setupEventListeners() {
     
     searchInput.addEventListener('input', (e) => {
         clearBtn.style.display = e.target.value ? 'block' : 'none';
-        if (e.target.value.length > 2) {
+        if (e.target.value.length > 1) {
             showSuggestions(e.target.value);
             searchTipsEl.style.display = 'none';
         } else {
@@ -91,6 +93,25 @@ async function preloadPages() {
     
     allPages = await Promise.all(promises);
     console.log(`Loaded ${allPages.length} pages`);
+    buildWordDictionary();
+}
+
+// Build dictionary of all words for spell checking
+function buildWordDictionary() {
+    allPages.forEach(page => {
+        if (!page) return;
+        
+        const allText = `${page.title} ${page.h1} ${page.h2} ${page.metaDescription} ${page.metaKeywords} ${page.paragraphs}`;
+        const words = allText.toLowerCase()
+            .split(/\s+/)
+            .filter(word => word.length > 3) // Only words longer than 3 chars
+            .map(word => word.replace(/[^a-z0-9]/g, '')) // Remove punctuation
+            .filter(word => word.length > 3);
+        
+        words.forEach(word => wordDictionary.add(word));
+    });
+    
+    console.log(`Dictionary built with ${wordDictionary.size} unique words`);
 }
 
 // Fetch and parse a single page
@@ -132,7 +153,7 @@ async function fetchPageData(pageNum) {
 
 // Show search suggestions
 function showSuggestions(query) {
-    if (!query || query.length < 3) return;
+    if (!query || query.length < 1) return;
     
     const suggestions = new Set();
     const queryLower = query.toLowerCase();
@@ -179,6 +200,108 @@ function showSuggestions(query) {
 function selectSuggestion(suggestion) {
     searchInput.value = suggestion;
     suggestionsEl.classList.remove('show');
+    performSearch();
+}
+
+// Calculate Levenshtein distance between two strings
+function levenshteinDistance(str1, str2) {
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const matrix = [];
+    
+    // Initialize matrix
+    for (let i = 0; i <= len1; i++) {
+        matrix[i] = [i];
+    }
+    for (let j = 0; j <= len2; j++) {
+        matrix[0][j] = j;
+    }
+    
+    // Fill matrix
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1,      // deletion
+                matrix[i][j - 1] + 1,      // insertion
+                matrix[i - 1][j - 1] + cost // substitution
+            );
+        }
+    }
+    
+    return matrix[len1][len2];
+}
+
+// Find closest matching word in dictionary
+function findClosestWord(word) {
+    const wordLower = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (wordLower.length < 3) return null;
+    
+    let closestWord = null;
+    let minDistance = Infinity;
+    const maxDistance = Math.ceil(wordLower.length * 0.4); // Allow 40% difference
+    
+    for (const dictWord of wordDictionary) {
+        // Skip if length difference is too large
+        if (Math.abs(dictWord.length - wordLower.length) > maxDistance) continue;
+        
+        const distance = levenshteinDistance(wordLower, dictWord);
+        
+        if (distance < minDistance && distance > 0 && distance <= maxDistance) {
+            minDistance = distance;
+            closestWord = dictWord;
+        }
+    }
+    
+    return closestWord;
+}
+
+// Check if query might be misspelled and suggest correction
+function checkSpelling(query) {
+    const terms = query.toLowerCase()
+        .replace(/\s+(and|or)\s+/gi, ' ')
+        .split(/\s+/)
+        .filter(term => term.length > 3);
+    
+    const corrections = [];
+    
+    terms.forEach(term => {
+        const cleanTerm = term.replace(/[^a-z0-9]/g, '');
+        if (!wordDictionary.has(cleanTerm)) {
+            const suggestion = findClosestWord(cleanTerm);
+            if (suggestion) {
+                corrections.push({ original: term, suggestion });
+            }
+        }
+    });
+    
+    return corrections;
+}
+
+// Show "Did you mean?" suggestion
+function showDidYouMean(corrections, originalQuery) {
+    if (corrections.length === 0) {
+        didYouMeanEl.style.display = 'none';
+        return;
+    }
+    
+    let correctedQuery = originalQuery;
+    corrections.forEach(({ original, suggestion }) => {
+        const regex = new RegExp(`\\b${original}\\b`, 'gi');
+        correctedQuery = correctedQuery.replace(regex, suggestion);
+    });
+    
+    didYouMeanEl.innerHTML = `
+        <span>Did you mean: </span>
+        <button class="suggestion-link" onclick="searchWithCorrection('${correctedQuery.replace(/'/g, "\\'")}')">${correctedQuery}</button>
+    `;
+    didYouMeanEl.style.display = 'block';
+}
+
+// Search with corrected query
+function searchWithCorrection(correctedQuery) {
+    searchInput.value = correctedQuery;
+    didYouMeanEl.style.display = 'none';
     performSearch();
 }
 
@@ -329,9 +452,17 @@ async function performSearch() {
     setTimeout(() => {
         hideLoading();
         if (results.length > 0) {
+            didYouMeanEl.style.display = 'none';
             filterSection.style.display = 'flex';
             displayResults(results);
         } else {
+            // Check for spelling mistakes if no results
+            const corrections = checkSpelling(query);
+            if (corrections.length > 0) {
+                showDidYouMean(corrections, query);
+            } else {
+                didYouMeanEl.style.display = 'none';
+            }
             showNoResults();
         }
     }, 500);

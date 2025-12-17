@@ -5,6 +5,10 @@ A mysterious dark-themed web search application with advanced search capabilitie
 ## 🚀 Features
 
 - **Advanced Search Engine**: Real-time search across 75+ pages of content
+- **Spell Correction**: "Did you mean?" suggestions using Levenshtein distance algorithm
+  - Automatically detects misspelled queries
+  - Suggests corrections based on word dictionary
+  - One-click to search with corrected term
 - **Boolean Operators**: Support for AND/OR operators for precise searches
   - `quantum AND physics` - Find pages containing both terms
   - `space OR astronomy` - Find pages containing either term
@@ -39,6 +43,8 @@ A mysterious dark-themed web search application with advanced search capabilitie
 - **Search Algorithm**: 
   - Multi-field text matching (title, H1, H2, meta tags, content)
   - Boolean operators (AND/OR) for precise search control
+  - Levenshtein distance algorithm for spell checking
+  - Intelligent word dictionary (auto-built from content)
   - Scoring system with prioritization
   - Exact word matching with regex patterns
   - Real-time filtering and sorting
@@ -179,6 +185,12 @@ For licensing inquiries, contact: [Your Contact Information]
 
 ## 📝 Version History
 
+- **v1.2.0** (December 2025)
+  - Added "Did you mean?" spell correction feature
+  - Implemented Levenshtein distance algorithm
+  - Auto-built word dictionary from content (1000+ words)
+  - Smart correction suggestions for misspelled queries
+  - One-click correction with re-search
 - **v1.1.0** (December 2025)
   - Added AND/OR boolean operators for advanced search
   - Interactive search tips panel

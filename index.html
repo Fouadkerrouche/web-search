@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fouad Image Search - Discover Amazing Images</title>
+    <title>The Fool Image Search </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="search-container">
         <div class="header">
             <h1 class="logo">
-                <span class="logo-f">F</span>ouad
+                <span class="logo-f">I</span>mage
                 <span class="logo-search">Search</span>
             </h1>
             <p class="tagline">Discover the world through images</p>
@@ -26,7 +26,7 @@
                     type="text" 
                     id="searchInput" 
                     class="search-input" 
-                    placeholder="Search for space, wildlife... (Use AND/OR: 'quantum AND physics')"
+                    placeholder="Search for ..."
                     autocomplete="off"
                 >
                 <button id="clearBtn" class="clear-btn" style="display: none;">
@@ -49,8 +49,8 @@
         <div class="search-tips" id="searchTips" style="display: none;">
             <h4>🔍 Search Tips</h4>
             <ul>
-                <li><strong>AND:</strong> Find pages with all terms - <code>quantum AND physics</code></li>
-                <li><strong>OR:</strong> Find pages with any term - <code>space OR astronomy</code></li>
+                <li><strong>AND:</strong> Find pages with all terms </li>
+                <li><strong>OR:</strong> Find pages with any term</li>
                 <li><strong>Default:</strong> Without operators, searches for any matching word</li>
             </ul>
         </div>
@@ -63,6 +63,8 @@
         </div>
 
         <div class="stats" id="stats"></div>
+
+        <div class="did-you-mean" id="didYouMean" style="display: none;"></div>
 
         <div class="loading" id="loading" style="display: none;">
             <div class="loading-spinner"></div>
@@ -98,7 +100,7 @@
     </div>
 
     <footer class="footer">
-        <p>&copy; 2025 Fouad Search. All rights reserved.</p>
+        <p>&copy; 2025 Fouad Kerrouche. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
