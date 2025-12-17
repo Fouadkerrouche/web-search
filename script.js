@@ -197,7 +197,7 @@ function showSuggestions(query) {
 }
 
 // Select a suggestion
-function selectSuggestion(suggestion) {
+window.selectSuggestion = function(suggestion) {
     searchInput.value = suggestion;
     suggestionsEl.classList.remove('show');
     performSearch();
@@ -299,7 +299,7 @@ function showDidYouMean(corrections, originalQuery) {
 }
 
 // Search with corrected query
-function searchWithCorrection(correctedQuery) {
+window.searchWithCorrection = function(correctedQuery) {
     searchInput.value = correctedQuery;
     didYouMeanEl.style.display = 'none';
     performSearch();
@@ -513,7 +513,7 @@ function displayResults(results) {
 }
 
 // Open page in new tab
-function openPage(url) {
+window.openPage = function(url) {
     window.open(url, '_blank');
 }
 
