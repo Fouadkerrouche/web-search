@@ -135,7 +135,7 @@ The application includes:
 
 ## 🔒 License & Usage Rights
 
-**COPYRIGHT © 2025 FOUAD KERROUCHE. ALL RIGHTS RESERVED.**
+**COPYRIGHT © 2025 FOUAD KERROUCHE & OUSSAMA HEZOUAT. ALL RIGHTS RESERVED.**
 
 This project and all associated files are proprietary and confidential.
 
@@ -158,10 +158,13 @@ This project and all associated files are proprietary and confidential.
 
 For licensing inquiries, contact: [Your Contact Information]
 
-## 👨‍💻 Developer
+## 👨‍💻 Team
 
-**Fouad Kerrouche**
+**Project Owner**: Fouad Kerrouche
 - GitHub: [@Fouadkerrouche](https://github.com/Fouadkerrouche)
+
+**Developer**: Oussama Hezouat
+- GitHub: [@oussamahezouat](https://github.com/oussamahezouat)
 
 ## 📝 Version History
 
